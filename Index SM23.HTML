@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="Ligue 1.JS"></script>
+    <script src="Premier League.JS"></script>
+    <script src="League Two.JS"></script>
+    <title>Classement des Championnats</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        .container { margin: 20px; }
+        .link { cursor: pointer; color: blue; text-decoration: underline; font-size: 20px; margin: 10px; display: block; }
+        .hidden { display: none; }
+        table { width: 50%; margin: auto; border-collapse: collapse; }
+        th, td { border: 1px solid black; padding: 10px; text-align: center; }
+        img { width: 50px; height: 50px; }
+    </style>
+</head>
+<body>
+    <h1>Championnats</h1>
+    <div id="links"></div>
+    <div id="classement" class="hidden"></div>
+
+    <script>
+        const linksContainer = document.getElementById("links");
+        const classementContainer = document.getElementById("classement");
+
+        // Fusionner les championnats
+        const championnats = [
+            ...ligue1Championnats,
+            ...premierLeagueChampionnats,
+            ...leaguetwochampionnats
+        ];
+
+        // Générer les liens pour chaque championnat
+        championnats.forEach((champ, index) => {
+            const link = document.createElement("div");
+            link.innerText = champ.nom;
+            link.className = "link";
+            link.onclick = () => afficherClassement(index);
+            linksContainer.appendChild(link);
+        });
+
+        // Fonction pour afficher le classement du championnat sélectionné
+        function afficherClassement(index) {
+            const championnat = championnats[index];
+            let html = `<h2>${championnat.nom}</h2>`;
+            html += `<table>
+                        <tr><th>Logo</th><th>Nom</th><th>Points</th></tr>`;
+
+            // Trier par points et appliquer couleur selon position
+            championnat.clubs.sort((a, b) => b.points - a.points).forEach((club, clIndex) => {
+                const couleur = championnat.couleur[clIndex] || "white"; // Par défaut blanc si plus de 3 clubs
+                html += `<tr style="background-color: ${couleur};">
+                            <td><img src="${club.logo}" /></td>
+                            <td>${club.nom}</td>
+                            <td>${club.points}</td>
+                        </tr>`;
+            });
+
+            html += `</table>`;
+            classementContainer.innerHTML = html;
+            classementContainer.classList.remove("hidden");
+        }
+    </script>
+</body>
+</html>
